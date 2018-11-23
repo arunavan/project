@@ -1,0 +1,42 @@
+Sanjoy.Chowdhury2@cognizant.com/pass@word1
+
+GIT - 172.18.2.18
+
+Secureftp.cognizant.com
+sftp_nwa/$ft9_Nwa
+
+GIT Access - 
+Email - Sanjoy.Chowdhury2@cognizant.com
+User Id - Sanjoy
+Pwd - Sanjoy_9
+
+
+
+Command line instructions
+--------------------------------------
+Git global setup
+git config --global user.name "Sanjoy Chowdhury"
+git config --global user.email "sanjoy.chowdhury2@cognizant.com"
+
+Create a new repository
+git clone http://172.18.2.18/Sanjoy/Capsule_Workout_Planner.git
+cd Capsule_Workout_Planner
+touch README.md
+git add README.md
+git commit -m "add README"
+git push -u origin master
+
+Existing folder
+cd existing_folder
+git init
+git remote add origin http://172.18.2.18/Sanjoy/Capsule_Workout_Planner.git
+git add .
+git commit -m "Initial commit"
+git push -u origin master
+
+Existing Git repository
+cd existing_repo
+git remote rename origin old-origin
+git remote add origin http://localhost/Sanjoy/Capsule_Workout_Planner.git
+git push -u origin --all
+git push -u origin --tags
