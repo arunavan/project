@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"		
+	"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.cognizant.internal.workout.service.mapper.WorkoutMapper">
+
+	<resultMap id="workout" type="com.cognizant.internal.workout.service.bo.WorkoutBO">
+		<result column="title" property="task"></result>
+		<result column="note" property="note"></result>
+		<result column="calories" property="calBurnPerMinute"></result>
+		<result column="categoryId" property="categoryId"></result>
+		<result column="workoutId" property="workoutId"></result>
+		<result column="start_date" property="startDate"></result>
+		<result column="end_date" property="endDate"></result>
+		<result column="start_time" property="startTime"></result>
+		<result column="end_time" property="endTime"></result>
+	</resultMap>
+
+	<resultMap id="category" type="com.cognizant.internal.workout.service.bo.CategoryBO">
+		<result column="category_id" property="categoryId"></result>
+		<result column="category_name" property="categoryName"></result>
+	</resultMap>
+
+	<select id="getWorkout" resultMap="workout">
+		select distinct
+		workcollec.workout_title as title,
+		workcollec.workout_note as
+		note,
+		workcollec.calories_burn_per_min as calories,
+		workcollec.category_id as
+		categoryId,
+		workcollec.workout_id as
+		workoutId,
+		active.start_date as
+		startDate,
+		active.start_time as startTime,
+		active.end_date as endDate,
+		active.end_time as endTime
+		from
+		workout.workout_collection workcollec
+		left join
+		workout.workout_active active
+		on
+		workcollec.workout_id=active.workout_id
+		where
+		workcollec.delete_status='N' order by active.start_time desc;
+	</select>
+
+	<select id="searchExistingWorkout" resultMap="workout">
+		select
+		work.workout_id
+		from
+		workout.workout_active as
+		work,workout.workout_collection as workcollec
+		where
+		workcollec.delete_status='N'and
+		workcollec.workout_id=work.workout_id
+		and
+		work.end_date is null and
+		work.end_time is null
+		and work.start_date
+		is not null and work.start_time is not null
+	</select>
+
+
+	<select id="getAllTrack" resultMap="workout">
+		select work.start_date as
+		startDate,
+		work.end_date as endDate,
+		work.start_time as startTime,
+		work.end_time as endTime
+		from
+		workout.workout_active as work
+		where
+		work.workout_id is not null
+	</select>
+
+	<insert id="addWorkOut" useGeneratedKeys="true" keyProperty="WorkOutBO.workoutId">
+		insert
+		into
+		workout.workout_collection
+		(workout_title,workout_note,calories_burn_per_min,category_id,delete_status)
+		values
+		(
+		#{WorkOutBean.task},#{WorkOutBean.note},#{WorkOutBean.calBurnPerMinute},#{WorkOutBean.categoryId},'N'
+		)
+	</insert>
+
+
+
+	<update id="updatetCategory">
+		update
+		workout.workout_category
+		set category_name =
+		#{categoryBean.categoryName}
+		where
+		category_id=#{categoryBean.categoryId}
+	</update>
+
+	<update id="updateWorkout">
+		update
+		workout.workout_collection
+		set workout_title =
+		#{WorkOutBean.task},
+		workout_note = #{WorkOutBean.note},
+		calories_burn_per_min = #{WorkOutBean.calBurnPerMinute},
+		category_id =
+		#{WorkOutBean.categoryId}
+		where
+		workout_id=#{WorkOutBean.workoutId}
+	</update>
+
+	<update id="updateWorkoutDate">
+		update
+		workout.workout_active
+		set start_date =
+		#{WorkOutBean.startTime},
+		end_date = #{WorkOutBean.endTime}
+		where
+		workout_id=#{WorkOutBean.workoutId}
+	</update>
+
+
+	<!-- <insert id="addWorkOutDate" > insert into workout.workout_active (start_date,end_date,start_time,end_time,workout_id) 
+		values(#{WorkOutBean.startDate},#{WorkOutBean.endDate},#{WorkOutBean.startTime},#{WorkOutBean.endTime},#{WorkOutBean.workoutId}) 
+		</insert> -->
+
+
+
+	<select id="getWorkOuts" resultMap="category">
+		select
+		category_id,category_name from workout.workout_category where
+		delete_status='N'
+	</select>
+
+
+
+	<insert id="addWorkOuts">
+		insert
+		into
+		workout.workout_category
+		(category_name,delete_status)
+		values(#{category.categoryName},'N')
+	</insert>
+
+
+	<insert id="addDateTime">
+		insert
+		into
+		workout.workout_active(start_date,start_time,workout_id)
+		values(#{WorkOutBean.startDate},#{WorkOutBean.startTime},#{WorkOutBean.workoutId})
+	</insert>
+
+	<update id="endDateTime">
+		update
+		workout.workout_active
+		set
+		end_date =
+		#{WorkOutBean.endDate},
+		end_time = #{WorkOutBean.endTime}
+		where
+		workout_id=#{WorkOutBean.workoutId}
+	</update>
+
+
+
+	<update id="deleteWorkOuts">
+		update
+		workout.workout_category
+		set delete_status = 'Y'
+
+		where
+		category_id=#{inCategoryId}
+	</update>
+
+	<!-- <delete id="deleteWorkout"> delete from workout.workout_collection 
+		where workout_id=#{WorkOutBean.workoutId} </delete> -->
+
+	<update id="deleteWorkout">
+		update
+		workout.workout_collection
+		set delete_status =
+		'Y'
+		where
+		workout_id=#{inworkoutId}
+	</update>
+
+	<select id="getWorkoutForWeek" resultMap="workout">
+		select dayofweek(a.start_date) as day,
+		sum(c.calories_burn_per_min*(TIME_TO_SEC(a.end_time) -
+		TIME_TO_SEC(a.start_time))/60) as caloriesBurn from workout_collection
+		c join workout_active a on c.workout_id=a.workout_id
+		where
+		c.delete_status='N' and a.start_date>(now() - interval 7 day) group
+		by
+		a.start_date;
+	</select>
+
+	<select id="getWorkoutForMonth" resultMap="workout">
+		select
+		FLOOR((DAYOFMONTH(a.start_date) - 1) / 7) + 1 AS weekOfMonth ,
+		sum(c.calories_burn_per_min*(TIME_TO_SEC(a.end_time) -
+		TIME_TO_SEC(a.start_time))/60) as caloriesBurn from workout_collection
+		c join workout_active a on c.workout_id=a.workout_id
+		where c.delete_status='N' and a.start_date>(now() - interval 1 month) group
+		by FLOOR((DAYOFMONTH(a.start_date) - 1) / 7) + 1
+	</select>
+
+	<select id="getWorkoutForYear" resultMap="workout">
+		select
+		month(a.start_date) as monthOfYear,
+		sum(c.calories_burn_per_min*(TIME_TO_SEC(a.end_time) -
+		TIME_TO_SEC(a.start_time))/60) as caloriesBurn from workout_collection
+		c join workout_active a on c.workout_id=a.workout_id
+		where c.delete_status='N' and a.start_date>(now() - interval 1 year) group
+		by month(a.start_date)
+	</select>
+
+</mapper>

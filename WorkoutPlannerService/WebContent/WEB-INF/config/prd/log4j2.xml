@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug">
+    <Appenders>
+         <RollingFile name="allLogsFile" fileName="C:/Service.log" append="true" filePattern="/dvl/work/apps/was/i1/logs/aro//work-Service-%d{MM-dd-yyyy}-%i.log">
+        	<PatternLayout pattern="%d{DATE} %-10X{session} %-8X{user} %5p %c{1}:%L - %m%n" />
+        	<Policies>
+				<SizeBasedTriggeringPolicy size="10000KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+        </RollingFile>
+        <Console name="debugConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{DATE} %5p %c{1}:%L - %m%n" />
+        </Console>
+    </Appenders>
+    
+    <Loggers>
+    	<Logger name="org.apache" additivity="false" level="warn" >
+    		<AppenderRef ref="debugConsole" />
+    	</Logger>
+    	<Logger name="org.apache" additivity="false" level="info">
+    		<AppenderRef ref="debugConsole" />
+    	</Logger>
+        <Root level="debug">
+            <AppenderRef ref="debugConsole" />
+            <AppenderRef ref="allLogsFile" />
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'war'
+
+def artifact_name = 'WorkoutService'
+
+group = 'com.workout.service'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	compile ("javax:javaee-api:7.0")
+	compile ("org.aspectj:aspectjrt:${aspectj_version}")
+	compile ("org.aspectj:aspectjweaver:${aspectj_version}")
+	compile ("org.springframework:spring-aop:${spring_version}")
+	compile ("org.springframework:spring-aspects:${spring_version}")
+	compile ("org.springframework:spring-beans:${spring_version}")
+	compile ("org.springframework:spring-context:${spring_version}")
+	compile ("org.springframework:spring-core:${spring_version}")
+	compile ("org.springframework:spring-expression:${spring_version}")
+	compile ("org.springframework:spring-jdbc:${spring_version}")
+	compile ("org.springframework:spring-tx:${spring_version}")
+	compile ("org.springframework:spring-web:${spring_version}")
+	compile ("org.springframework:spring-webmvc:${spring_version}")
+	compile ("org.springframework.plugin:spring-plugin-core:${spring_plugin_version}")
+	compile ("org.springframework.plugin:spring-plugin-metadata:${spring_plugin_version}")
+	compile ("io.springfox:springfox-core:${springfox_version}")
+	compile ("io.springfox:springfox-schema:${springfox_version}")
+	compile ("io.springfox:springfox-spi:${springfox_version}")
+	compile ("io.springfox:springfox-spring-web:${springfox_version}")
+	compile ("io.springfox:springfox-swagger-common:${springfox_version}")
+	compile ("io.springfox:springfox-swagger-ui:${springfox_version}")
+	compile ("io.springfox:springfox-swagger2:${springfox_version}")
+	compile ("io.springfox:springfox-core:${springfox_version}")
+	compile("io.swagger:swagger-annotations:${swagger_version}")
+	compile("io.swagger:swagger-models:${swagger_version}")
+	compile ("com.fasterxml.jackson.core:jackson-annotations:${jackson_version}")
+	compile ("com.fasterxml.jackson.core:jackson-core:${jackson_version}")
+	compile ("com.fasterxml.jackson.core:jackson-databind:${jackson_version}")
+	compile("org.mybatis:mybatis:${mybatis_version}")
+	compile("org.mybatis:mybatis-spring:${mybatis_spring_version}")
+    compile("io.jsonwebtoken:jjwt:${jjwt_version}")     
+	compile("commons-lang:commons-lang:${commons_lang_version}")
+	compile("org.apache.commons:commons-lang3:${commons_lang3_version}")
+	compile ("org.slf4j:slf4j-api:${slf4j_version}")
+	compile ("org.apache.logging.log4j:log4j-api:${log4j2_version}")
+	compile ("org.apache.logging.log4j:log4j-core:${log4j2_version}")
+    compile ("org.apache.logging.log4j:log4j-slf4j-impl:${log4j2_version}")
+	testCompile ("junit:junit:${junit_version}")
+	testCompile ("org.mockito:mockito-core:${mockito_core_version}")
+    testCompile ("javax:javaee-api:7.0")
+    compile("mysql:mysql-connector-java:${mysql_connector_java}")
+}
+
+/*
+* build appropriate artifact
+*/
+war {
+	archiveName = "$artifact_name.$extension"
+}

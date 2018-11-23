@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration>
+    <Appenders>
+        <RollingFile name="allLogsFile" fileName="/trn/sfa/apps/was/i1/logs/workout/workout-service.log" append="true" filePattern="/trn/sfa/apps/was/i1/logs/workout/workout-service-%i.log">
+        	<PatternLayout pattern="%d{DATE} %-10X{session} %-8X{user} %5p %c{1}:%L - %m%n" />
+        	<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+        </RollingFile>
+        <Console name="debugConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{DATE} %5p %c{1}:%L - %m%n" />
+        </Console>
+    </Appenders>
+    
+    <Loggers>
+    	<Logger name="org.apache" additivity="false" level="warn" >
+    		<AppenderRef ref="allLogsFile" />
+    	</Logger>
+    	<Logger name="org.mybatis.spring" additivity="false" level="warn">
+    		<AppenderRef ref="allLogsFile" />
+    	</Logger>
+    	<Logger name="com.cognizant.internal.mw.messaging.tpfimpl" additivity="false" level="warn">
+    		<AppenderRef ref="allLogsFile" />
+    	</Logger>
+    	<Logger name="springfox.documentation" additivity="false" level="warn">
+    		<AppenderRef ref="allLogsFile" />
+    	</Logger>
+        <Root level="debug">            
+            <AppenderRef ref="allLogsFile" />
+        </Root>
+    </Loggers>
+</Configuration>
