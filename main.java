@@ -1,4 +1,4 @@
 class main {
 
-
+void disp(){}
 }
